@@ -23,20 +23,20 @@ public class SignosVitalesGeneratorService {
     // Lista de IDs de pacientes para simular
     private final Long[] patientIds = {23L, 1L, 2L, 7L, 4L};
     
-    @Scheduled(fixedRate = 1000) // Ejecutar cada 1 segundo
-    public void generateAndSendVitalSigns() {
-        for (Long patientId : patientIds) {
-            SignosVitalesDTO vitalSigns = generateVitalSigns(patientId);
-            signosVitalesService.enviarSignosVitales(vitalSigns);
-            logger.info("Generados signos vitales para paciente {}: HR={}, BP={}/{}, Temp={}, O2={}",
-                patientId,
-                vitalSigns.getHeartRate(),
-                vitalSigns.getBloodPressureSystolic(),
-                vitalSigns.getBloodPressureDiastolic(),
-                vitalSigns.getBodyTemperature(),
-                vitalSigns.getOxygenSaturation());
-        }
-    }
+    // @Scheduled(fixedRate = 1000) // Ejecutar cada 1 segundo
+    // public void generateAndSendVitalSigns() {
+    //     for (Long patientId : patientIds) {
+    //         SignosVitalesDTO vitalSigns = generateVitalSigns(patientId);
+    //         signosVitalesService.enviarSignosVitales(vitalSigns);
+    //         logger.info("Generados signos vitales para paciente {}: HR={}, BP={}/{}, Temp={}, O2={}",
+    //             patientId,
+    //             vitalSigns.getHeartRate(),
+    //             vitalSigns.getBloodPressureSystolic(),
+    //             vitalSigns.getBloodPressureDiastolic(),
+    //             vitalSigns.getBodyTemperature(),
+    //             vitalSigns.getOxygenSaturation());
+    //     }
+    // }
     
     private SignosVitalesDTO generateVitalSigns(Long patientId) {
         // Probabilidad del 1% de generar valores anormales

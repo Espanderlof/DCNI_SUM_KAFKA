@@ -16,15 +16,21 @@ public class SignosVitalesConsumer {
     @Autowired
     private ObjectMapper objectMapper;
     
+    @Autowired
+    private VitalSignsService vitalSignsService;
+    
     @KafkaListener(topics = "signs-vitales", groupId = "grupo-signos-vitales")
     public void consumir(String mensaje) {
         try {
             SignosVitalesDTO signosVitales = objectMapper.readValue(mensaje, SignosVitalesDTO.class);
-            logger.info("Signos vitales recibidos - Paciente: {}", signosVitales.getPacienteId());
+            logger.info("Signos vitales recibidos - Paciente: {}", signosVitales.getPatientId());
             logger.info("Detalles: {}", signosVitales);
             
-            // Aquí puedes agregar la lógica adicional que necesites
+            // Analizar los signos vitales
             analizarSignosVitales(signosVitales);
+            
+            // Enviar al backend
+            vitalSignsService.sendVitalSigns(signosVitales);
             
         } catch (Exception e) {
             logger.error("Error al procesar mensaje de signos vitales: {}", e.getMessage());
@@ -33,14 +39,14 @@ public class SignosVitalesConsumer {
     
     private void analizarSignosVitales(SignosVitalesDTO signosVitales) {
         logger.info("=== Análisis de Signos Vitales ===");
-        logger.info("Paciente ID: {}", signosVitales.getPacienteId());
-        logger.info("Fecha Medición: {}", signosVitales.getFechaMedicion());
-        logger.info("Temperatura: {}°C", signosVitales.getTemperatura());
-        logger.info("Frecuencia Cardíaca: {} bpm", signosVitales.getFrecuenciaCardiaca());
+        logger.info("Paciente ID: {}", signosVitales.getPatientId());
+        logger.info("Fecha Medición: {}", signosVitales.getTimestamp());
+        logger.info("Temperatura: {}°C", signosVitales.getBodyTemperature());
+        logger.info("Frecuencia Cardíaca: {} bpm", signosVitales.getHeartRate());
         logger.info("Presión Arterial: {}/{} mmHg", 
-            signosVitales.getPresionSistolica(), 
-            signosVitales.getPresionDiastolica());
-        logger.info("Saturación de Oxígeno: {}%", signosVitales.getSaturacionOxigeno());
+            signosVitales.getBloodPressureSystolic(), 
+            signosVitales.getBloodPressureDiastolic());
+        logger.info("Saturación de Oxígeno: {}%", signosVitales.getOxygenSaturation());
         logger.info("================================");
     }
 }

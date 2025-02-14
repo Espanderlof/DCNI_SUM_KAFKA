@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class SignosVitalesDTO {
-    private String pacienteId;
-    private Double temperatura;
-    private Integer frecuenciaCardiaca;
-    private Integer presionSistolica;
-    private Integer presionDiastolica;
-    private Integer saturacionOxigeno;
-    private LocalDateTime fechaMedicion;
+    private Long patientId;
+    private Double heartRate;
+    private Double bloodPressureSystolic;
+    private Double bloodPressureDiastolic;
+    private Double bodyTemperature;
+    private Double oxygenSaturation;
+    private LocalDateTime timestamp;
 }
