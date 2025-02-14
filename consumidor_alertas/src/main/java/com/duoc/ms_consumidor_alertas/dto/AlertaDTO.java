@@ -5,13 +5,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class AlertaDTO {
-    private String alertaId;
-    private String pacienteId;
-    private String tipo;
-    private String severidad;
-    private String descripcion;
-    private Double valorMedido;
-    private Double valorReferencia;
-    private LocalDateTime fechaAlerta;
-    private Boolean atendida;
+    private Long id;
+    private Long patientId;
+    private String alertType;
+    private String description;
+    private String severity;
+    private LocalDateTime timestamp;
+    private Boolean isActive;
 }

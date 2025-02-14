@@ -29,48 +29,19 @@ public class AlertaConsumer {
             @Header(KafkaHeaders.OFFSET) long offset) {
         try {
             AlertaDTO alerta = objectMapper.readValue(mensaje, AlertaDTO.class);
-            logger.info("=== Procesando Alerta ===");
+            logger.info("=== Alerta Recibida ===");
             logger.info("Partition: {}, Offset: {}", partition, offset);
-            logger.info("ID de Alerta: {}", alerta.getAlertaId());
-            logger.info("ID de Paciente: {}", alerta.getPacienteId());
-            logger.info("Tipo: {}", alerta.getTipo());
-            logger.info("Severidad: {}", alerta.getSeveridad());
-            logger.info("Descripción: {}", alerta.getDescripcion());
-            logger.info("Valor Medido: {}", alerta.getValorMedido());
-            logger.info("Valor de Referencia: {}", alerta.getValorReferencia());
-            logger.info("Fecha de Alerta: {}", alerta.getFechaAlerta());
-            logger.info("Atendida: {}", alerta.getAtendida());
+            logger.info("ID: {}", alerta.getId());
+            logger.info("Patient ID: {}", alerta.getPatientId());
+            logger.info("Alert Type: {}", alerta.getAlertType());
+            logger.info("Severity: {}", alerta.getSeverity());
+            logger.info("Description: {}", alerta.getDescription());
+            logger.info("Timestamp: {}", alerta.getTimestamp());
+            logger.info("Is Active: {}", alerta.getIsActive());
             logger.info("=======================");
-            
-            procesarAlerta(alerta);
-            
         } catch (Exception e) {
-            logger.error("Error al procesar alerta - Partition: {}, Offset: {} - Error: {}", 
+            logger.error("Error al procesar mensaje - Partition: {}, Offset: {} - Error: {}", 
                 partition, offset, e.getMessage());
-        }
-    }
-    
-    private void procesarAlerta(AlertaDTO alerta) {
-        switch(alerta.getSeveridad().toUpperCase()) {
-            case "CRITICA":
-                logger.warn("¡ALERTA CRÍTICA! Se requiere atención inmediata para el paciente: {}", 
-                    alerta.getPacienteId());
-                break;
-            case "ALTA":
-                logger.warn("Alerta de alta prioridad para el paciente: {}", 
-                    alerta.getPacienteId());
-                break;
-            case "MEDIA":
-                logger.info("Alerta de prioridad media registrada para el paciente: {}", 
-                    alerta.getPacienteId());
-                break;
-            case "BAJA":
-                logger.info("Alerta de baja prioridad registrada para el paciente: {}", 
-                    alerta.getPacienteId());
-                break;
-            default:
-                logger.info("Alerta sin prioridad específica registrada para el paciente: {}", 
-                    alerta.getPacienteId());
         }
     }
 }
