@@ -23,8 +23,8 @@ public class SignosVitalesService {
     public void enviarSignosVitales(SignosVitalesDTO signosVitales) {
         try {
             String mensaje = objectMapper.writeValueAsString(signosVitales);
-            kafkaTemplate.send(TOPIC, signosVitales.getPacienteId(), mensaje);
-            logger.info("Signos vitales enviados correctamente para el paciente: {}", signosVitales.getPacienteId());
+            kafkaTemplate.send(TOPIC, signosVitales.getPatientId().toString(), mensaje);
+            logger.info("Signos vitales enviados correctamente para el paciente: {}", signosVitales.getPatientId());
         } catch (Exception e) {
             logger.error("Error al enviar signos vitales: {}", e.getMessage());
             throw new RuntimeException("Error al enviar signos vitales", e);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/signos-vitales")
+@CrossOrigin(origins = "*")
 public class SignosVitalesController {
 
     @Autowired
