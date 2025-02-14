@@ -1,6 +1,6 @@
 package com.duoc.ms_productor_alertas.service;
 
-import com.duoc.ms_productor_alertas.dto.AlertaDTO;
+import com.duoc.ms_productor_alertas.dto.AlertDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,14 +20,14 @@ public class AlertaService {
     @Autowired
     private ObjectMapper objectMapper;
     
-    public void enviarAlerta(AlertaDTO alerta) {
+    public void enviarAlerta(AlertDTO alerta) {
         try {
             String mensaje = objectMapper.writeValueAsString(alerta);
-            kafkaTemplate.send(TOPIC, alerta.getPacienteId(), mensaje)
+            kafkaTemplate.send(TOPIC, alerta.getPatientId().toString(), mensaje)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
                         logger.info("Alerta enviada correctamente. ID: {}, Paciente: {}", 
-                            alerta.getAlertaId(), alerta.getPacienteId());
+                            alerta.getId(), alerta.getPatientId());
                     } else {
                         logger.error("Error al enviar alerta: {}", ex.getMessage());
                     }

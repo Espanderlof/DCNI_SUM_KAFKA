@@ -1,13 +1,12 @@
 package com.duoc.ms_productor_alertas.controller;
 
-import com.duoc.ms_productor_alertas.dto.AlertaDTO;
+import com.duoc.ms_productor_alertas.dto.AlertDTO;
 import com.duoc.ms_productor_alertas.service.AlertaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/alertas")
@@ -17,17 +16,14 @@ public class AlertaController {
     private AlertaService alertaService;
 
     @PostMapping
-    public ResponseEntity<String> enviarAlerta(@RequestBody AlertaDTO alerta) {
+    public ResponseEntity<String> enviarAlerta(@RequestBody AlertDTO alerta) {
         try {
             // Asignar valores por defecto si no vienen
-            if (alerta.getAlertaId() == null) {
-                alerta.setAlertaId(UUID.randomUUID().toString());
+            if (alerta.getTimestamp() == null) {
+                alerta.setTimestamp(LocalDateTime.now());
             }
-            if (alerta.getFechaAlerta() == null) {
-                alerta.setFechaAlerta(LocalDateTime.now());
-            }
-            if (alerta.getAtendida() == null) {
-                alerta.setAtendida(false);
+            if (alerta.getIsActive() == null) {
+                alerta.setIsActive(true);
             }
 
             alertaService.enviarAlerta(alerta);
@@ -41,16 +37,14 @@ public class AlertaController {
     @PostMapping("/test")
     public ResponseEntity<String> enviarAlertaPrueba() {
         try {
-            AlertaDTO alerta = new AlertaDTO();
-            alerta.setAlertaId(UUID.randomUUID().toString());
-            alerta.setPacienteId("TEST001");
-            alerta.setTipo("TEMPERATURA_ALTA");
-            alerta.setSeveridad("ALTA");
-            alerta.setDescripcion("Temperatura corporal elevada");
-            alerta.setValorMedido(39.5);
-            alerta.setValorReferencia(37.5);
-            alerta.setFechaAlerta(LocalDateTime.now());
-            alerta.setAtendida(false);
+            AlertDTO alerta = new AlertDTO();
+            alerta.setId(1L);
+            alerta.setPatientId(1001L);
+            alerta.setAlertType("TEMPERATURE_HIGH");
+            alerta.setSeverity("HIGH");
+            alerta.setDescription("Temperatura corporal elevada");
+            alerta.setTimestamp(LocalDateTime.now());
+            alerta.setIsActive(true);
 
             alertaService.enviarAlerta(alerta);
             return ResponseEntity.ok("Alerta de prueba enviada correctamente");
