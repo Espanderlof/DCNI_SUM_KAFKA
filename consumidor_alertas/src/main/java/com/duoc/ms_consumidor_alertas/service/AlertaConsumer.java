@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -16,8 +17,11 @@ public class AlertaConsumer {
     
     private static final Logger logger = LoggerFactory.getLogger(AlertaConsumer.class);
     private final ObjectMapper objectMapper;
+    private final AlertService alertService;
     
-    public AlertaConsumer() {
+    @Autowired
+    public AlertaConsumer(AlertService alertService) {
+        this.alertService = alertService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
     }
@@ -39,6 +43,10 @@ public class AlertaConsumer {
             logger.info("Timestamp: {}", alerta.getTimestamp());
             logger.info("Is Active: {}", alerta.getIsActive());
             logger.info("=======================");
+            
+            // Enviar la alerta al endpoint
+            alertService.sendAlert(alerta);
+            
         } catch (Exception e) {
             logger.error("Error al procesar mensaje - Partition: {}, Offset: {} - Error: {}", 
                 partition, offset, e.getMessage());
