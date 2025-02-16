@@ -39,8 +39,8 @@ public class SignosVitalesGeneratorService {
     // }
     
     private SignosVitalesDTO generateVitalSigns(Long patientId) {
-        // Probabilidad del 1% de generar valores anormales
-        boolean generateAbnormal = random.nextDouble() < 0.01;
+        // Probabilidad del 2.5% de generar valores anormales
+        boolean generateAbnormal = random.nextDouble() < 0.025;
         
         SignosVitalesDTO dto = new SignosVitalesDTO();
         dto.setPatientId(patientId);

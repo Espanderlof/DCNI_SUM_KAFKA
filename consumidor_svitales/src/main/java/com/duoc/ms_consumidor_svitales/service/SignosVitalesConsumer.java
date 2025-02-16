@@ -19,21 +19,73 @@ public class SignosVitalesConsumer {
     @Autowired
     private VitalSignsService vitalSignsService;
     
+    @Autowired
+    private VitalSignsValidator validator;
+    
+    @Autowired
+    private AlertService alertService;
+    
     @KafkaListener(topics = "signs-vitales", groupId = "grupo-signos-vitales")
     public void consumir(String mensaje) {
         try {
             SignosVitalesDTO signosVitales = objectMapper.readValue(mensaje, SignosVitalesDTO.class);
             logger.info("Signos vitales recibidos - Paciente: {}", signosVitales.getPatientId());
-            logger.info("Detalles: {}", signosVitales);
             
             // Analizar los signos vitales
             analizarSignosVitales(signosVitales);
+            
+            // Verificar signos vitales y generar alertas si es necesario
+            checkVitalSigns(signosVitales);
             
             // Enviar al backend
             vitalSignsService.sendVitalSigns(signosVitales);
             
         } catch (Exception e) {
             logger.error("Error al procesar mensaje de signos vitales: {}", e.getMessage());
+        }
+    }
+    
+    private void checkVitalSigns(SignosVitalesDTO signs) {
+        if (!validator.isHeartRateNormal(signs.getHeartRate())) {
+            String severity = validator.getAlertSeverity(signs.getHeartRate(), 60.0, 100.0);
+            alertService.createAlert(
+                signs.getPatientId(),
+                "ABNORMAL_HEART_RATE",
+                "Frecuencia cardíaca fuera de rango normal: " + signs.getHeartRate(),
+                severity
+            );
+        }
+
+        if (!validator.isBloodPressureNormal(
+                signs.getBloodPressureSystolic(),
+                signs.getBloodPressureDiastolic())) {
+            alertService.createAlert(
+                signs.getPatientId(),
+                "ABNORMAL_BLOOD_PRESSURE",
+                String.format("Presión arterial anormal: %f/%f",
+                    signs.getBloodPressureSystolic(),
+                    signs.getBloodPressureDiastolic()),
+                "HIGH"
+            );
+        }
+
+        if (!validator.isTemperatureNormal(signs.getBodyTemperature())) {
+            String severity = validator.getAlertSeverity(signs.getBodyTemperature(), 36.5, 37.5);
+            alertService.createAlert(
+                signs.getPatientId(),
+                "ABNORMAL_TEMPERATURE",
+                "Temperatura corporal fuera de rango: " + signs.getBodyTemperature(),
+                severity
+            );
+        }
+
+        if (!validator.isOxygenSaturationNormal(signs.getOxygenSaturation())) {
+            alertService.createAlert(
+                signs.getPatientId(),
+                "LOW_OXYGEN_SATURATION",
+                "Saturación de oxígeno baja: " + signs.getOxygenSaturation(),
+                "HIGH"
+            );
         }
     }
     
