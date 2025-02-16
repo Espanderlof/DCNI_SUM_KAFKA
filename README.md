@@ -59,3 +59,6 @@ docker logs -f kafka_generador_svitales
 
 # detener todos los contenedores
 docker stop $(docker ps -a -q)
+
+# detener un contenedor
+docker stop kafka_generador_svitales
