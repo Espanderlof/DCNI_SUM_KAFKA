@@ -1,0 +1,42 @@
+version: '3'
+
+networks:
+  kafka_pro_cons:
+    driver: bridge
+
+services:
+  kafka_productor_alertas:
+    image: espanderlof/kafka_productor_alertas:latest
+    container_name: kafka_productor_alertas
+    ports:
+      - "8092:8092"
+    networks:
+      - kafka_pro_cons
+    restart: unless-stopped
+
+  kafka_consumidor_alertas:
+    image: espanderlof/kafka_consumidor_alertas:latest
+    container_name: kafka_consumidor_alertas
+    ports:
+      - "8094:8094"
+    networks:
+      - kafka_pro_cons
+    restart: unless-stopped
+
+  kafka_productor_svitales:
+    image: espanderlof/kafka_productor_svitales:latest
+    container_name: kafka_productor_svitales
+    ports:
+      - "8091:8091"
+    networks:
+      - kafka_pro_cons
+    restart: unless-stopped
+
+  kafka_consumidor_svitales:
+    image: espanderlof/kafka_consumidor_svitales:latest
+    container_name: kafka_consumidor_svitales
+    ports:
+      - "8093:8093"
+    networks:
+      - kafka_pro_cons
+    restart: unless-stopped
